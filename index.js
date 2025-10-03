@@ -17,7 +17,7 @@ const {
 } = Matter;
 
 const wallPad = 64;
-const loseHeight = 84;
+const loseHeight = 95;
 const statusBarHeight = 48;
 const previewBallHeight = 32;
 const friction = {
@@ -35,17 +35,23 @@ const GameStates = {
 };
 
 const Game = {
-	width: 640,
-	height: 960,
+	width: 1344,
+	height: 768,
 	elements: {
 		canvas: document.getElementById('game-canvas'),
 		ui: document.getElementById('game-ui'),
 		score: document.getElementById('game-score'),
 		end: document.getElementById('game-end-container'),
 		endTitle: document.getElementById('game-end-title'),
+		endLink: document.getElementById('game-end-link'),
 		statusValue: document.getElementById('game-highscore-value'),
 		nextFruitImg: document.getElementById('game-next-fruit'),
 		previewBall: null,
+		btnMute: document.getElementById('btn-mute'),
+		btnMuteImg: document.getElementById('btn-mute-img'),
+		btnStartCss: document.getElementById('btn-start-css'),
+		status: document.getElementById('game-status'),
+		creditText: document.getElementById('credit-text'),
 	},
 	cache: { highscore: 0 },
 	sounds: {
@@ -61,12 +67,26 @@ const Game = {
 		pop8: new Audio('./assets/pop8.mp3'),
 		pop9: new Audio('./assets/pop9.mp3'),
 		pop10: new Audio('./assets/pop10.mp3'),
+		pop11: new Audio('./assets/pop10.mp3'),
+		pop12: new Audio('./assets/pop10.mp3'),
+		pop13: new Audio('./assets/pop10.mp3'),
+		pop14: new Audio('./assets/pop10.mp3'),
+		bgm: new Audio('./assets/bgm.mp3'),
 	},
 
 	stateIndex: GameStates.MENU,
-
+	isMuted: false,
+	hotkeysEnabled: false,
 	score: 0,
 	fruitsMerged: [],
+
+	toggleMute: function () {
+		Game.isMuted = !Game.isMuted;
+		Game.elements.btnMuteImg.src = Game.isMuted ? './assets/img/unmute.png' : './assets/img/mute.png';
+
+		// Only mute the BGM
+		Game.sounds.bgm.muted = Game.isMuted;
+	},
 	calculateScore: function () {
 		const score = Game.fruitsMerged.reduce((total, count, sizeIndex) => {
 			const value = Game.fruitSizes[sizeIndex].scoreValue * count;
@@ -78,17 +98,21 @@ const Game = {
 	},
 
 	fruitSizes: [
-		{ radius: 24,  scoreValue: 1,  img: './assets/img/circle0.png'  },
-		{ radius: 32,  scoreValue: 3,  img: './assets/img/circle1.png'  },
-		{ radius: 40,  scoreValue: 6,  img: './assets/img/circle2.png'  },
-		{ radius: 56,  scoreValue: 10, img: './assets/img/circle3.png'  },
-		{ radius: 64,  scoreValue: 15, img: './assets/img/circle4.png'  },
-		{ radius: 72,  scoreValue: 21, img: './assets/img/circle5.png'  },
-		{ radius: 84,  scoreValue: 28, img: './assets/img/circle6.png'  },
-		{ radius: 96,  scoreValue: 36, img: './assets/img/circle7.png'  },
-		{ radius: 128, scoreValue: 45, img: './assets/img/circle8.png'  },
-		{ radius: 160, scoreValue: 55, img: './assets/img/circle9.png'  },
-		{ radius: 192, scoreValue: 66, img: './assets/img/circle10.png' },
+        { radius: 18,  scoreValue: 1,   img: './assets/img/circle0.png'  },
+        { radius: 24,  scoreValue: 3,   img: './assets/img/circle1.png'  },
+        { radius: 30,  scoreValue: 6,   img: './assets/img/circle2.png'  },
+        { radius: 42,  scoreValue: 10,  img: './assets/img/circle3.png'  },
+        { radius: 48,  scoreValue: 15,  img: './assets/img/circle4.png'  },
+        { radius: 54,  scoreValue: 21,  img: './assets/img/circle5.png'  },
+        { radius: 63,  scoreValue: 28,  img: './assets/img/circle6.png'  },
+        { radius: 72,  scoreValue: 36,  img: './assets/img/circle7.png'  },
+        { radius: 74,  scoreValue: 45,  img: './assets/img/circle8.png'  },
+        { radius: 83,  scoreValue: 55,  img: './assets/img/circle9.png'  },
+        { radius: 89, scoreValue: 66,  img: './assets/img/circle10.png' },
+        { radius: 97, scoreValue: 78,  img: './assets/img/circle11.png' },
+        { radius: 110, scoreValue: 91,  img: './assets/img/circle12.png' },
+        { radius: 122, scoreValue: 105, img: './assets/img/circle13.png' },
+        { radius: 134, scoreValue: 120, img: './assets/img/circle14.png' },
 	],
 	currentFruitSize: 0,
 	nextFruitSize: 0,
@@ -122,36 +146,104 @@ const Game = {
 	},
 
 	initGame: function () {
+		Game.sounds.bgm.addEventListener('timeupdate', function(){
+			// Manually loop the BGM when it's near the end
+			if (this.currentTime > this.duration - 0.5) {
+				this.currentTime = 0;
+				this.play();
+			}
+		});
 		Render.run(render);
 		Runner.run(runner, engine);
 
 		Composite.add(engine.world, menuStatics);
+        Game.elements.canvas.style.backgroundImage = "url('./assets/img/menu-bg.png')";
+
+		const unlockAudio = () => {
+			Object.values(Game.sounds).forEach(sound => {
+				sound.play();
+				sound.pause();
+				sound.currentTime = 0;
+			});
+			document.removeEventListener('mousedown', unlockAudio);
+			document.removeEventListener('touchstart', unlockAudio);
+		};
+		document.addEventListener('mousedown', unlockAudio);
+		document.addEventListener('touchstart', unlockAudio);
 
 		Game.loadHighscore();
-		Game.elements.ui.style.display = 'none';
 		Game.fruitsMerged = Array.apply(null, Array(Game.fruitSizes.length)).map(() => 0);
+		Game.elements.btnStartCss.addEventListener('click', Game.startGame);
+		Game.elements.btnMute.addEventListener('click', Game.toggleMute);
+		Game.elements.endLink.addEventListener('click', Game.resetGame);
 
-		const menuMouseDown = function () {
-			if (mouseConstraint.body === null || mouseConstraint.body?.label !== 'btn-start') {
+		document.addEventListener('keydown', function(event) {
+			// Toggle hotkeys on/off with F1
+			if (event.key === 'F2') {
+				Game.hotkeysEnabled = !Game.hotkeysEnabled;
+				console.log(`Hotkeys ${Game.hotkeysEnabled ? 'Enabled' : 'Disabled'}`);
 				return;
 			}
 
-			Events.off(mouseConstraint, 'mousedown', menuMouseDown);
-			Game.startGame();
-		}
+			// If hotkeys are not enabled, do nothing
+			if (!Game.hotkeysEnabled) return;
 
-		Events.on(mouseConstraint, 'mousedown', menuMouseDown);
+			if (Game.stateIndex !== GameStates.READY && Game.stateIndex !== GameStates.DROP) {
+				return; // Only active during gameplay
+			}
+
+			// Game state hotkeys
+			if (event.key === 'l') {
+				Game.loseGame();
+				return;
+			} else if (event.key === 'h') {
+				// Directly trigger the highscore display effect for preview
+				Game.sounds.bgm.pause();
+				Game.sounds.bgm.currentTime = 0;
+				Game.stateIndex = GameStates.LOSE;
+				Game.elements.endTitle.innerText = 'New Highscore!'; // Set text directly
+				Game.elements.end.style.display = 'flex';
+				runner.enabled = false;
+				return;
+			}
+
+			// Fruit selection hotkeys
+			const keyToFruitIndex = {
+				'5': 5, '6': 6, '7': 7,
+				'8': 8, '9': 9, '0': 10,
+				'1': 11, '2': 12, '3': 13, '4': 14
+			};
+
+			if (keyToFruitIndex.hasOwnProperty(event.key)) {
+				const fruitIndex = keyToFruitIndex[event.key];
+				Game.currentFruitSize = fruitIndex;
+
+				// Update the preview ball
+				Composite.remove(engine.world, Game.elements.previewBall);
+				Game.elements.previewBall = Game.generateFruitBody(render.mouse.position.x, previewBallHeight, Game.currentFruitSize, {
+					isStatic: true,
+					collisionFilter: { mask: 0x0040 }
+				});
+				Composite.add(engine.world, Game.elements.previewBall);
+			}
+		});
 	},
 
 	startGame: function () {
 		Game.sounds.click.play();
+		console.log("Playing BGM");
+		Game.sounds.bgm.play();
+		Game.elements.btnStartCss.style.display = 'none';
+		Game.elements.creditText.style.display = 'none';
 
+        Game.elements.canvas.style.backgroundImage = "url('./assets/img/ingame-bg.png')";
 		Composite.remove(engine.world, menuStatics);
 		Composite.add(engine.world, gameStatics);
 
 		Game.calculateScore();
 		Game.elements.endTitle.innerText = 'Game Over!';
 		Game.elements.ui.style.display = 'block';
+		Game.elements.status.style.display = 'flex';
 		Game.elements.end.style.display = 'none';
 		Game.elements.previewBall = Game.generateFruitBody(Game.width / 2, previewBallHeight, 0, { isStatic: true });
 		Composite.add(engine.world, Game.elements.previewBall);
@@ -190,13 +282,16 @@ const Game = {
 				// Skip different sizes
 				if (bodyA.sizeIndex !== bodyB.sizeIndex) continue;
 
+				// Prevent largest fruit from merging
+				if (bodyA.sizeIndex === Game.fruitSizes.length - 1) continue;
+
 				// Skip if already popped
 				if (bodyA.popped || bodyB.popped) continue;
 
 				let newSize = bodyA.sizeIndex + 1;
 
 				// Go back to smallest size
-				if (bodyA.circleRadius >= Game.fruitSizes[Game.fruitSizes.length - 1].radius) {
+				if (bodyA.sizeIndex === Game.fruitSizes.length - 1) {
 					newSize = 0;
 				}
 
@@ -239,10 +334,50 @@ const Game = {
 	},
 
 	loseGame: function () {
+		Game.sounds.bgm.pause();
+		Game.sounds.bgm.currentTime = 0;
 		Game.stateIndex = GameStates.LOSE;
 		Game.elements.end.style.display = 'flex';
 		runner.enabled = false;
 		Game.saveHighscore();
+	},
+
+	resetGame: function () {
+		// Remove the leftover preview ball from the previous game
+		if (Game.elements.previewBall) {
+			Composite.remove(engine.world, Game.elements.previewBall);
+		}
+
+		// Clear all non-static bodies (fruits)
+		const bodiesToRemove = Composite.allBodies(engine.world).filter(body => !body.isStatic);
+		Composite.remove(engine.world, bodiesToRemove);
+
+		// Reset scores and merged fruits array
+		Game.score = 0;
+		Game.fruitsMerged = Array.apply(null, Array(Game.fruitSizes.length)).map(() => 0);
+		Game.calculateScore();
+
+		// Hide game over screen
+		Game.elements.end.style.display = 'none';
+
+		// Re-enable physics
+		runner.enabled = true;
+
+		// Create first preview ball
+		Game.currentFruitSize = 0;
+		Game.setNextFruitSize();
+		Game.elements.previewBall = Game.generateFruitBody(Game.width / 2, previewBallHeight, 0, { isStatic: true });
+		Composite.add(engine.world, Game.elements.previewBall);
+
+		// Restart BGM if it was playing
+		if (!Game.isMuted) {
+			Game.sounds.bgm.currentTime = 0;
+			console.log("Playing BGM in resetGame");
+			Game.sounds.bgm.play();
+		}
+
+		// Set state to ready
+		Game.stateIndex = GameStates.READY;
 	},
 
 	// Returns an index, or null
@@ -268,31 +403,31 @@ const Game = {
 	},
 
 	addFruit: function (x) {
-		if (Game.stateIndex !== GameStates.READY) return;
+			if (Game.stateIndex !== GameStates.READY) return;
 
-		Game.sounds.click.play();
+			Game.sounds.click.play();
 
-		Game.stateIndex = GameStates.DROP;
-		const latestFruit = Game.generateFruitBody(x, previewBallHeight, Game.currentFruitSize);
-		Composite.add(engine.world, latestFruit);
+			Game.stateIndex = GameStates.DROP;
+			const latestFruit = Game.generateFruitBody(x, previewBallHeight, Game.currentFruitSize);
+			Composite.add(engine.world, latestFruit);
 
-		Game.currentFruitSize = Game.nextFruitSize;
-		Game.setNextFruitSize();
-		Game.calculateScore();
+			Game.currentFruitSize = Game.nextFruitSize;
+			Game.setNextFruitSize();
+			Game.calculateScore();
 
-		Composite.remove(engine.world, Game.elements.previewBall);
-		Game.elements.previewBall = Game.generateFruitBody(render.mouse.position.x, previewBallHeight, Game.currentFruitSize, {
-			isStatic: true,
-			collisionFilter: { mask: 0x0040 }
-		});
+			Composite.remove(engine.world, Game.elements.previewBall);
+			Game.elements.previewBall = Game.generateFruitBody(render.mouse.position.x, previewBallHeight, Game.currentFruitSize, {
+				isStatic: true,
+				collisionFilter: { mask: 0x0040 }
+			});
 
-		setTimeout(() => {
-			if (Game.stateIndex === GameStates.DROP) {
-				Composite.add(engine.world, Game.elements.previewBall);
-				Game.stateIndex = GameStates.READY;
-			}
-		}, 500);
-	}
+			setTimeout(() => {
+				if (Game.stateIndex === GameStates.DROP) {
+					Composite.add(engine.world, Game.elements.previewBall);
+					Game.stateIndex = GameStates.READY;
+				}
+			}, 500);
+		}
 }
 
 const engine = Engine.create();
@@ -304,40 +439,11 @@ const render = Render.create({
 		width: Game.width,
 		height: Game.height,
 		wireframes: false,
-		background: '#ffdcae'
+		background: 'transparent'
 	}
 });
 
-const menuStatics = [
-	Bodies.rectangle(Game.width / 2, Game.height * 0.4, 512, 512, {
-		isStatic: true,
-		render: { sprite: { texture: './assets/img/bg-menu.png' } },
-	}),
-
-	// Add each fruit in a circle
-	...Array.apply(null, Array(Game.fruitSizes.length)).map((_, index) => {
-		const x = (Game.width / 2) + 192 * Math.cos((Math.PI * 2 * index)/12);
-		const y = (Game.height * 0.4) + 192 * Math.sin((Math.PI * 2 * index)/12);
-		const r = 64;
-
-		return Bodies.circle(x, y, r, {
-			isStatic: true,
-			render: {
-				sprite: {
-					texture: `./assets/img/circle${index}.png`,
-					xScale: r / 1024,
-					yScale: r / 1024,
-				},
-			},
-		});
-	}),
-
-	Bodies.rectangle(Game.width / 2, Game.height * 0.75, 512, 96, {
-		isStatic: true,
-		label: 'btn-start',
-		render: { sprite: { texture: './assets/img/btn-start.png' } },
-	}),
-];
+const menuStatics = [];
 
 const wallProps = {
 	isStatic: true,
@@ -370,32 +476,3 @@ const mouseConstraint = MouseConstraint.create(engine, {
 render.mouse = mouse;
 
 Game.initGame();
-
-const resizeCanvas = () => {
-	const screenWidth = document.body.clientWidth;
-	const screenHeight = document.body.clientHeight;
-
-	let newWidth = Game.width;
-	let newHeight = Game.height;
-	let scaleUI = 1;
-
-	if (screenWidth * 1.5 > screenHeight) {
-		newHeight = Math.min(Game.height, screenHeight);
-		newWidth = newHeight / 1.5;
-		scaleUI = newHeight / Game.height;
-	} else {
-		newWidth = Math.min(Game.width, screenWidth);
-		newHeight = newWidth * 1.5;
-		scaleUI = newWidth / Game.width;
-	}
-
-	render.canvas.style.width = `${newWidth}px`;
-	render.canvas.style.height = `${newHeight}px`;
-
-	Game.elements.ui.style.width = `${Game.width}px`;
-	Game.elements.ui.style.height = `${Game.height}px`;
-	Game.elements.ui.style.transform = `scale(${scaleUI})`;
-};
-
-document.body.onload = resizeCanvas;
-document.body.onresize = resizeCanvas;
