@@ -1,9 +1,17 @@
-# NMIXX 'SPINNIN' ON IT' - 西瓜遊戲 
+# NMIXX 'SPINNIN' ON IT' - 西瓜遊戲
   https://nmixx-suika-game.pages.dev/
-
+  
 ## 專案發想
 
 這個專案的靈感源自於女子團體 NMIXX 最新先行曲 **'SPINNIN' ON IT'** 的音樂錄影帶。在 MV 中，出現了簡短但令人印象深刻的「西瓜遊戲」片段，其視覺風格與趣味性讓我印象深刻。
+
+---
+
+**版權聲明 (Copyright Notice)**
+
+本專案中所有與 NMIXX 相關的視覺、音樂素材及概念，包括但不限於歌曲、藝人形象，其版權皆歸屬於 **JYP Entertainment** 與 **NMIXX**。本作品僅為粉絲基於對 NMIXX 及其音樂的喜愛而創作的非商業性致敬與程式練習。
+
+---
 
 ## 開發緣起
 
@@ -24,12 +32,20 @@
 
 ---
 
-# NMIXX 'SPINNIN' ON IT' - Suika Game Recreation 
+# NMIXX 'SPINNIN' ON IT' - Suika Game
   https://nmixx-suika-game.pages.dev/
 
 ## Inspiration
 
 This project's inspiration comes from the music video for the K-pop girl group NMIXX's latest pre-release single, **'SPINNIN' ON IT'**. A brief yet striking "Suika Game" (Watermelon Game) segment appeared in the MV, and its visual style and playful nature immediately captivated me.
+
+---
+
+**Copyright Notice**
+
+All NMIXX-related visual, musical assets, and concepts used in this project, including but not limited to the song and artist imagery, are the exclusive copyrighted property of **JYP Entertainment** and **NMIXX**. This work is a non-commercial fan creation, developed purely as a tribute and coding exercise out of admiration for NMIXX and their music.
+
+---
 
 ## Motivation
 
