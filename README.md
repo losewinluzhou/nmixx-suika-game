@@ -1,4 +1,5 @@
-# NMIXX 'SPINNIN' ON IT' - 西瓜遊戲 https://nmixx-suika-game.pages.dev/
+# NMIXX 'SPINNIN' ON IT' - 西瓜遊戲 
+  https://nmixx-suika-game.pages.dev/
 
 ## 專案發想
 
@@ -23,7 +24,8 @@
 
 ---
 
-# NMIXX 'SPINNIN' ON IT' - Suika Game Recreation https://nmixx-suika-game.pages.dev/
+# NMIXX 'SPINNIN' ON IT' - Suika Game Recreation 
+  https://nmixx-suika-game.pages.dev/
 
 ## Inspiration
 
