@@ -1,3 +1,36 @@
+
+# NMIXX 'SPINNIN' ON IT' - Suika Game
+  https://nmixx-suika-game.pages.dev/
+
+## Inspiration
+
+This project's inspiration comes from the music video for the K-pop girl group NMIXX's latest pre-release single, **'SPINNIN' ON IT'**. A brief yet striking "Suika Game" (Watermelon Game) segment appeared in the MV, and its visual style and playful nature immediately captivated me.
+
+---
+
+**Copyright Notice**
+
+All NMIXX-related visual, musical assets, and concepts used in this project, including but not limited to the song and artist imagery, are the exclusive copyrighted property of **JYP Entertainment** and **NMIXX**. This work is a non-commercial fan creation, developed purely as a tribute and coding exercise out of admiration for NMIXX and their music.
+
+---
+
+## Motivation
+
+As a developer currently learning and practicing Vibe Coding, I instantly recognized the Suika Game segment in the MV as an excellent opportunity for a practical implementation. Driven by this, I dedicated time to try and bring the Suika Game scene and concept from NMIXX's MV to life through code.
+
+## Project Goal
+
+The goals of this project are to:
+* Recreate the visual style and basic gameplay of the Suika Game as seen in NMIXX's 'SPINNIN' ON IT' MV.
+* Serve as a personal practice and exploration platform for my Vibe Coding skills.
+* Pay homage to NMIXX's creativity and share the fun of the game with more fans.
+
+## Credits
+
+This project is heavily based on the excellent work by [moonfloof](https://github.com/moonfloof) on their [suika-game](https://github.com/moonfloof/suika-game) repository. A huge thank you to them for providing a great foundation to learn from and build upon.
+
+---
+
 # NMIXX 'SPINNIN' ON IT' - 西瓜遊戲
   https://nmixx-suika-game.pages.dev/
   
@@ -29,35 +62,3 @@
 本專案大致架構來源於[moonfloof](https://github.com/moonfloof) on their [suika-game](https://github.com/moonfloof/suika-game) repository.
 
 感謝原作者提供了這麼棒的程式碼基礎，讓我可以學習並進行修改。
-
----
-
-# NMIXX 'SPINNIN' ON IT' - Suika Game
-  https://nmixx-suika-game.pages.dev/
-
-## Inspiration
-
-This project's inspiration comes from the music video for the K-pop girl group NMIXX's latest pre-release single, **'SPINNIN' ON IT'**. A brief yet striking "Suika Game" (Watermelon Game) segment appeared in the MV, and its visual style and playful nature immediately captivated me.
-
----
-
-**Copyright Notice**
-
-All NMIXX-related visual, musical assets, and concepts used in this project, including but not limited to the song and artist imagery, are the exclusive copyrighted property of **JYP Entertainment** and **NMIXX**. This work is a non-commercial fan creation, developed purely as a tribute and coding exercise out of admiration for NMIXX and their music.
-
----
-
-## Motivation
-
-As a developer currently learning and practicing Vibe Coding, I instantly recognized the Suika Game segment in the MV as an excellent opportunity for a practical implementation. Driven by this, I dedicated time to try and bring the Suika Game scene and concept from NMIXX's MV to life through code.
-
-## Project Goal
-
-The goals of this project are to:
-* Recreate the visual style and basic gameplay of the Suika Game as seen in NMIXX's 'SPINNIN' ON IT' MV.
-* Serve as a personal practice and exploration platform for my Vibe Coding skills.
-* Pay homage to NMIXX's creativity and share the fun of the game with more fans.
-
-## Credits
-
-This project is heavily based on the excellent work by [moonfloof](https://github.com/moonfloof) on their [suika-game](https://github.com/moonfloof/suika-game) repository. A huge thank you to them for providing a great foundation to learn from and build upon.
